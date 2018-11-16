@@ -1,6 +1,7 @@
 package com.example.demo.controller
 
 import com.example.demo.model.Scene
+import com.example.demo.view.UIScene
 import tornadofx.*
 
 class MainController : Controller() {
@@ -8,7 +9,7 @@ class MainController : Controller() {
     val scenes = emptyList<Scene>().toMutableList()
 
     fun startNewNistory(data: MutableList<UIScene>) {
-        val add = createNewScene()
+        val add = createNewScene(scenes.lastOrNull())
         scenes.apply {
             clear()
             add(add)

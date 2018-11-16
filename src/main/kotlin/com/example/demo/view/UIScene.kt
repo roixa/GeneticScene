@@ -1,11 +1,11 @@
-package com.example.demo.controller
+package com.example.demo.view
 
 import com.example.demo.model.Scene
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
 import tornadofx.*
 
-class UIScene(scene: Scene = Scene()) :ViewModel(){
+class UIScene(scene: Scene = Scene()){
 
     val genDimensionProperty = SimpleIntegerProperty(this, "Dimension", scene.params.genDimension)
     var genDimension by genDimensionProperty

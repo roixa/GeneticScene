@@ -2,9 +2,12 @@ package com.example.demo.view
 
 import com.example.demo.controller.MainController
 import com.example.demo.controller.Strings
-import com.example.demo.controller.UIScene
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
+import javafx.scene.chart.LineChart
+import javafx.scene.chart.NumberAxis
+import javafx.scene.chart.XYChart
+import javafx.scene.chart.XYChartBuilder
 import javafx.scene.control.TableView
 import javafx.scene.layout.BorderPane
 import javafx.util.converter.NumberStringConverter
@@ -25,16 +28,23 @@ class MainView : View("Hello TornadoFX semen") {
 
     var scenesTable: TableView<UIScene> by singleAssign()
 
-    val scenes = listOf(UIScene(), UIScene()).toMutableList().observable()
+    val scenes = emptyList<UIScene>().toMutableList().observable()
+
+    val chartPoints = scenes.mapIndexed { index, uiScene ->
+        XYChart.Data<Number, Number>(index, uiScene.genDimension)
+    }.observable()
 
     var prevSelection: UIScene? = null
 
     lateinit var tableView: TableView<UIScene>
+    lateinit var chartView: LineChart<*, *>
 
     init {
         controller.startNewNistory(scenes)
+
+
         with(root) {
-            center {
+            left {
                 tableView = tableview(scenes) {
                     scenesTable = this
                     column(Strings.titleDimension, UIScene::genDimensionProperty)
@@ -48,9 +58,9 @@ class MainView : View("Hello TornadoFX semen") {
                     columnResizePolicy = SmartResize.POLICY
 
                 }
-            }
 
-            right {
+            }
+            center {
                 form {
                     fieldset("Edit scene") {
                         field(Strings.titleDimension) {
@@ -63,6 +73,12 @@ class MainView : View("Hello TornadoFX semen") {
                             save()
                         }
                     }
+                }
+            }
+
+            right {
+                chartView = linechart("example chart", NumberAxis(), NumberAxis()) {
+                    series("dimensions", chartPoints)
                 }
             }
         }
@@ -82,6 +98,13 @@ class MainView : View("Hello TornadoFX semen") {
 
     private fun save() {
         tableView.requestResize()
+        val list = scenes.mapIndexed { index, uiScene ->
+            XYChart.Data<Number, Number>(index, uiScene.genDimension)
+        }.observable()
+
+        chartPoints.clear()
+        chartPoints.addAll(list)
+
         controller.step(scenes)
         val person = scenesTable.selectedItem
         println("Saving ${person?.genDimension} / ${person?.genNumber}")
