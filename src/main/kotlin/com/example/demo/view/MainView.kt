@@ -25,15 +25,17 @@ class MainView : View("Hello TornadoFX semen") {
 
     var scenesTable: TableView<UIScene> by singleAssign()
 
-    val persons = listOf(UIScene(), UIScene()).observable()
+    val scenes = listOf(UIScene(), UIScene()).toMutableList().observable()
 
     var prevSelection: UIScene? = null
 
+    lateinit var tableView: TableView<UIScene>
+
     init {
-        controller.startNewNistory()
+        controller.startNewNistory(scenes)
         with(root) {
             center {
-                tableview(persons) {
+                tableView = tableview(scenes) {
                     scenesTable = this
                     column(Strings.titleDimension, UIScene::genDimensionProperty)
                     column(Strings.titleNumber, UIScene::genNumberProperty)
@@ -42,6 +44,9 @@ class MainView : View("Hello TornadoFX semen") {
                         editScene(it)
                         prevSelection = it
                     }
+
+                    columnResizePolicy = SmartResize.POLICY
+
                 }
             }
 
@@ -76,8 +81,8 @@ class MainView : View("Hello TornadoFX semen") {
     }
 
     private fun save() {
-        persons.add(UIScene())
-        controller.step()
+        tableView.requestResize()
+        controller.step(scenes)
         val person = scenesTable.selectedItem
         println("Saving ${person?.genDimension} / ${person?.genNumber}")
     }
