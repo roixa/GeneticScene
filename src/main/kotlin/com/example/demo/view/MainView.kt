@@ -4,6 +4,7 @@ import com.example.demo.controller.MainController
 import com.example.demo.controller.Strings
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
+import javafx.collections.ListChangeListener
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
@@ -41,7 +42,6 @@ class MainView : View("Hello TornadoFX semen") {
 
     init {
         controller.startNewNistory(scenes)
-
 
         with(root) {
             left {
