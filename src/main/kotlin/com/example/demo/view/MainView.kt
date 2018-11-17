@@ -4,11 +4,9 @@ import com.example.demo.controller.MainController
 import com.example.demo.controller.Strings
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.beans.property.SimpleIntegerProperty
-import javafx.collections.ListChangeListener
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
-import javafx.scene.chart.XYChartBuilder
 import javafx.scene.control.TableView
 import javafx.scene.layout.BorderPane
 import javafx.util.converter.NumberStringConverter
