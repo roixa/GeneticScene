@@ -2,11 +2,11 @@ package com.example.demo.view
 
 import com.example.demo.controller.MainController
 import com.example.demo.controller.Strings
-import javafx.beans.property.SimpleDoubleProperty
-import javafx.beans.property.SimpleIntegerProperty
+import com.example.demo.model.Scene
+import com.example.demo.view.common.IEditableField
+import com.example.demo.view.common.UISnapshot
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
-import javafx.scene.chart.XYChart
 import javafx.scene.control.TableView
 import javafx.scene.layout.BorderPane
 import javafx.util.converter.NumberStringConverter
@@ -18,94 +18,82 @@ class MainView : View("Hello TornadoFX semen") {
 
     override val root = BorderPane()
 
-    val dimensionProperty = SimpleIntegerProperty(this, "Dimension", 10)
-    val numberProperty = SimpleIntegerProperty(this, "Number", 100)
-    val populationProperty = SimpleIntegerProperty(this, "Population", 1000)
-    val relativeDistanceProperty = SimpleDoubleProperty(this, "RelativeDistance", 0.1)
-    val newEffectivelyChangesPercentProperty = SimpleIntegerProperty(this, "NewEffectivelyChangesPercent", 0)
 
+    val mData = UIData(UISnapshot(Scene(), 0))
 
-    var scenesTable: TableView<UIScene> by singleAssign()
+    var prevSelection: UISnapshot? = null
 
-    val scenes = emptyList<UIScene>().toMutableList().observable()
-
-    val chartPoints = scenes.mapIndexed { index, uiScene ->
-        XYChart.Data<Number, Number>(index, uiScene.genDimension)
-    }.observable()
-
-    var prevSelection: UIScene? = null
-
-    lateinit var tableView: TableView<UIScene>
+    lateinit var tableView: TableView<UISnapshot>
     lateinit var chartView: LineChart<*, *>
 
     init {
-        controller.startNewNistory(scenes)
-
+        controller.startNewNistory(mData)
         with(root) {
             left {
-                tableView = tableview(scenes) {
-                    scenesTable = this
-                    column(Strings.titleDimension, UIScene::genDimensionProperty)
-                    column(Strings.titleNumber, UIScene::genNumberProperty)
+
+                tableView = tableview(mData.snapshots) {
+                    column(Strings.titleNumber, UISnapshot::numberColomn)
+                    column(Strings.titleDimension, UISnapshot::dimensionColomn)
 
                     selectionModel.selectedItemProperty().onChange {
                         editScene(it)
                         prevSelection = it
                     }
-
                     columnResizePolicy = SmartResize.POLICY
-
                 }
-
             }
             center {
                 form {
                     fieldset("Edit scene") {
-                        field(Strings.titleDimension) {
-                            textfield(dimensionProperty, NumberStringConverter())
-                        }
-                        field(Strings.titleNumber) {
-                            textfield(numberProperty, NumberStringConverter())
-                        }
+                        mData.first.getEditableParams()
+                                .forEach {
+                                    field(it.name) {
+                                        val cast = it as IEditableField<*>
+                                        textfield(cast.editableField, NumberStringConverter())
+                                    }
+                                }
                         button("Step").action {
                             save()
                         }
                     }
                 }
             }
-
             right {
                 chartView = linechart("example chart", NumberAxis(), NumberAxis()) {
-                    series("dimensions", chartPoints)
+                    mData.chartsNames
+                            .forEach {
+                                series(it, mData.charts[it])
+                            }
                 }
             }
         }
     }
 
-    private fun editScene(scene: UIScene?) {
+    private fun editScene(scene: UISnapshot?) {
         if (scene != null) {
             prevSelection?.apply {
-                dimensionProperty.unbindBidirectional(genDimensionProperty)
-                numberProperty.unbindBidirectional(genNumberProperty)
+                this.getEditableParams().zip(mData.first.getEditableParams()).forEach {
+                    val from = it.second as IEditableField<*>
+                    val to = it.first as IEditableField<*>
+                    from.editableField.unbindBidirectional(to.editableField)
+                }
             }
-            dimensionProperty.bindBidirectional(scene.genDimensionProperty)
-            numberProperty.bindBidirectional(scene.genNumberProperty)
+            scene.getEditableParams().zip(mData.first.getEditableParams()).forEach {
+                val from = it.second as IEditableField<*>
+                val to = it.first as IEditableField<*>
+                from.editableField.bindBidirectional(to.editableField)
+            }
             prevSelection = scene
         }
     }
 
     private fun save() {
+
+        controller.step(mData)
         tableView.requestResize()
-        val list = scenes.mapIndexed { index, uiScene ->
-            XYChart.Data<Number, Number>(index, uiScene.genDimension)
-        }.observable()
-
-        chartPoints.clear()
-        chartPoints.addAll(list)
-
-        controller.step(scenes)
-        val person = scenesTable.selectedItem
-        println("Saving ${person?.genDimension} / ${person?.genNumber}")
+        mData.refreshChart()
+        val person = tableView.selectedItem
+        println("Saving ${person?.params?.map { it.value }}")
     }
 
 }

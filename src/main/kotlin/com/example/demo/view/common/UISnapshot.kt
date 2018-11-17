@@ -7,33 +7,29 @@ import com.example.demo.view.fields.PopulationField
 
 class UISnapshot(scene: Scene, position: Int) {
 
-    val params: List<UIParam>
-
-    init {
-        params = listOf(
+    companion object {
+        fun getParams(scene: Scene, position: Int = 0): List<UIParam> = listOf(
                 NumberField(position, scene.params.genNumber),
                 DimensionField(position, scene.params.genDimension),
                 PopulationField(position, scene.params.population)
         )
     }
 
-    fun getTableColomnsByName(name: String) = params
-            .filter { it.name == name }
-            .filter { it is ITableColomn<*> }
-            .map { it as ITableColomn<*> }
-            .map { it.getTableField() }
+    val params: List<UIParam> = getParams(scene, position)
+
+    fun numberColomn() = (params[0] as IEditableField<*>).editableField
+    fun dimensionColomn() = (params[1] as IEditableField<*>).editableField
+
+
+    fun getEditableParams() = params.filter { it is IEditableField<*> }
 
     fun getChartPointsByName(name: String) = params
             .filter { it.name == name }
             .filter { it is IChartPoint }
-            .map { it as IChartPoint }
-            .map { it.getChartProperty() }
-
-    fun getEditorFieldsByName(name: String) = params
-            .filter { it.name == name }
-            .filter { it is IEditableField<*> }
-            .map { it as IEditableField<*> }
-            .map { it.getEditableField() }
+            .map {
+                it as IChartPoint
+                it.getChartProperty(it.value.toInt())
+            }
 
 
 }

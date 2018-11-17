@@ -6,6 +6,5 @@ import javafx.beans.property.SimpleIntegerProperty
 
 class PopulationField (pos: Int, value: Int)
     : UIParam(pos, value, Strings.titlePopulation)
-//        , IChartPoint by ChartPoint(pos, value)
-        , ITableColomn<SimpleIntegerProperty> by TableIntColomn(Strings.titlePopulation, value)
+        , IChartPoint by ChartPoint(pos, value)
         , IEditableField<SimpleIntegerProperty> by EditableIntField(Strings.titlePopulation, value)
