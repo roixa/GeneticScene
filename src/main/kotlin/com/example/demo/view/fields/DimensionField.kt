@@ -10,5 +10,4 @@ class DimensionField(pos: Int, value: Int)
         , IChartPoint by ChartPoint(pos, value)
         , IEditableField<SimpleIntegerProperty> by EditableIntField(Strings.titleDimension, value) {
     override val value: Number by editableField
-    val local = editableField
 }

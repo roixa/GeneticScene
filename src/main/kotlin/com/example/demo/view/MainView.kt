@@ -34,6 +34,8 @@ class MainView : View("Hello TornadoFX semen") {
                 tableView = tableview(mData.snapshots) {
                     column(Strings.titleNumber, UISnapshot::numberColomn)
                     column(Strings.titleDimension, UISnapshot::dimensionColomn)
+                    column(Strings.titleAttributes, UISnapshot::attributesColomn)
+
 
                     selectionModel.selectedItemProperty().onChange {
                         editScene(it)
