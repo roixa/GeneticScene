@@ -1,4 +1,4 @@
 package com.example.demo.model
 
-class Female {
+class Female(genDimension: Int, genNumber: Int) : Person(genDimension, genNumber) {
 }
