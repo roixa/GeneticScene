@@ -20,8 +20,8 @@ open class Randomly(private val dimension: Int) {
         }
     }
 
-    fun getNextValue(): Int = values[rand.nextInt(dimension)]
+    fun getNextRandomValue(): Int = values[rand.nextInt(2 * dimension)]
 
+    fun isTrueRandomly() = rand.nextBoolean()
 }
 
-fun isTrueRandomly() = Random(System.currentTimeMillis()).nextBoolean()

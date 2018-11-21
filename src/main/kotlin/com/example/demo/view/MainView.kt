@@ -35,6 +35,7 @@ class MainView : View("Hello TornadoFX semen") {
                     column(Strings.titleNumber, UISnapshot::numberColomn)
                     column(Strings.titleDimension, UISnapshot::dimensionColomn)
                     column(Strings.titleAttributes, UISnapshot::attributesColomn)
+                    column(Strings.titleEffectivity, UISnapshot::effecrivityColomn)
 
 
                     selectionModel.selectedItemProperty().onChange {

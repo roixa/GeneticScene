@@ -23,10 +23,10 @@ class MainController : Controller() {
     }
 
     fun step(data: UIData) {
-        val add = createNewScene()
+        val add = createNewScene(scenes.lastOrNull())
         scenes.add(add)
         val size = data.snapshots.size
-        data.snapshots.add(UISnapshot(add, size-1))
+        data.snapshots.add(UISnapshot(add, size - 1))
     }
 
     private fun createNewScene(lastScene: Scene? = null): Scene {

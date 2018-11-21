@@ -1,10 +1,7 @@
 package com.example.demo.view.common
 
 import com.example.demo.model.Scene
-import com.example.demo.view.fields.AttributesField
-import com.example.demo.view.fields.DimensionField
-import com.example.demo.view.fields.NumberField
-import com.example.demo.view.fields.PopulationField
+import com.example.demo.view.fields.*
 
 class UISnapshot(scene: Scene, position: Int) {
 
@@ -13,7 +10,9 @@ class UISnapshot(scene: Scene, position: Int) {
                 NumberField(position, scene.params.genNumber),
                 DimensionField(position, scene.params.genDimension),
                 AttributesField(position, scene.params.attributesNumber),
-                PopulationField(position, scene.params.population)
+                PopulationField(position, scene.params.population),
+                EffectivityField(position, scene.personsEffectivity.toDouble())
+
         )
     }
 
@@ -23,6 +22,7 @@ class UISnapshot(scene: Scene, position: Int) {
     fun dimensionColomn() = (params[1] as IEditableField<*>).editableField
     fun attributesColomn() = (params[2] as IEditableField<*>).editableField
 
+    fun effecrivityColomn() = (params[4] as IEditableField<*>).editableField
 
     fun getEditableParams() = params.filter { it is IEditableField<*> }
 
