@@ -10,7 +10,7 @@ class UISnapshot(scene: Scene, position: Int) {
                 NumberField(position, scene.params.genNumber),
                 DimensionField(position, scene.params.genDimension),
                 AttributesField(position, scene.params.attributesNumber),
-                PopulationField(position, scene.params.population),
+                PopulationField(position, scene.population),
                 EffectivityField(position, scene.personsEffectivity.toDouble())
 
         )
@@ -21,6 +21,7 @@ class UISnapshot(scene: Scene, position: Int) {
     fun numberColomn() = (params[0] as IEditableField<*>).editableField
     fun dimensionColomn() = (params[1] as IEditableField<*>).editableField
     fun attributesColomn() = (params[2] as IEditableField<*>).editableField
+    fun populationColomn() = (params[3] as IEditableField<*>).editableField
 
     fun effecrivityColomn() = (params[4] as IEditableField<*>).editableField
 

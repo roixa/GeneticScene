@@ -4,10 +4,10 @@ class Scene(val oldScene: Scene? = null
             , genDimension: Int = 10
             , genNumber: Int = 100
             , attributesNumber: Int = 10
-            , var population: Int = 300
-            , val maxAge: Int = 10
+            , var population: Int = 500
+            , val maxAge: Int = 2
             , val maxSexes: Int = 3
-            , val relativeDistance: Double = 0.1
+            , val relativeDistance: Double = 1.0
             , newEffectivityChangesPersent: Int = 0) : Randomly(genDimension) {
 
     val params = Params(genDimension, genNumber, attributesNumber, population, relativeDistance, newEffectivityChangesPersent)
@@ -45,7 +45,7 @@ class Scene(val oldScene: Scene? = null
         }
         personsEffectivity = persons.filter { it is Male }
                 .map { it as Male }
-                .sumBy { it.getPersonalEffectivity(conditions, effectivity) }
+                .sumBy { it.getPersonalEffectivity(conditions, effectivity) }.div(persons.size)
     }
 
     private fun bornNewPopulation() {
@@ -53,7 +53,7 @@ class Scene(val oldScene: Scene? = null
 
         val males = persons.filter { it is Male }
                 .map { it as Male }
-                .sortedBy { it.getPersonalEffectivity(conditions, effectivity) }
+                .sortedByDescending { it.getPersonalEffectivity(conditions, effectivity) }
 
         persons.filter { it is Female }
                 .forEach {

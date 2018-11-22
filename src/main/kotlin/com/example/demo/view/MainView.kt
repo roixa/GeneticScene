@@ -2,7 +2,6 @@ package com.example.demo.view
 
 import com.example.demo.controller.MainController
 import com.example.demo.controller.Strings
-import com.example.demo.model.Scene
 import com.example.demo.view.common.IEditableField
 import com.example.demo.view.common.UISnapshot
 import javafx.scene.chart.LineChart
@@ -12,14 +11,12 @@ import javafx.scene.layout.BorderPane
 import javafx.util.converter.NumberStringConverter
 import tornadofx.*
 
-class MainView : View("Hello TornadoFX semen") {
+class MainView : View("Roix genetic algorithm") {
 
     val controller: MainController by inject()
 
     override val root = BorderPane()
 
-
-    val mData = UIData(UISnapshot(Scene(), 0))
 
     var prevSelection: UISnapshot? = null
 
@@ -27,14 +24,15 @@ class MainView : View("Hello TornadoFX semen") {
     lateinit var chartView: LineChart<*, *>
 
     init {
-        controller.startNewNistory(mData)
+        controller.startNewNistory()
         with(root) {
             left {
 
-                tableView = tableview(mData.snapshots) {
+                tableView = tableview(controller.data.snapshots) {
                     column(Strings.titleNumber, UISnapshot::numberColomn)
                     column(Strings.titleDimension, UISnapshot::dimensionColomn)
                     column(Strings.titleAttributes, UISnapshot::attributesColomn)
+                    column(Strings.titlePopulation, UISnapshot::populationColomn)
                     column(Strings.titleEffectivity, UISnapshot::effecrivityColomn)
 
 
@@ -48,7 +46,7 @@ class MainView : View("Hello TornadoFX semen") {
             center {
                 form {
                     fieldset("Edit scene") {
-                        mData.first.getEditableParams()
+                        controller.data.first.getEditableParams()
                                 .forEach {
                                     field(it.name) {
                                         val cast = it as IEditableField<*>
@@ -62,10 +60,10 @@ class MainView : View("Hello TornadoFX semen") {
                 }
             }
             right {
-                chartView = linechart("example chart", NumberAxis(), NumberAxis()) {
-                    mData.chartsNames
+                chartView = linechart("Values", NumberAxis(), NumberAxis()) {
+                    controller.data.chartsNames
                             .forEach {
-                                series(it, mData.charts[it])
+                                series(it, controller.data.charts[it])
                             }
                 }
             }
@@ -75,13 +73,13 @@ class MainView : View("Hello TornadoFX semen") {
     private fun editScene(scene: UISnapshot?) {
         if (scene != null) {
             prevSelection?.apply {
-                this.getEditableParams().zip(mData.first.getEditableParams()).forEach {
+                this.getEditableParams().zip(controller.data.first.getEditableParams()).forEach {
                     val from = it.second as IEditableField<*>
                     val to = it.first as IEditableField<*>
                     from.editableField.unbindBidirectional(to.editableField)
                 }
             }
-            scene.getEditableParams().zip(mData.first.getEditableParams()).forEach {
+            scene.getEditableParams().zip(controller.data.first.getEditableParams()).forEach {
                 val from = it.second as IEditableField<*>
                 val to = it.first as IEditableField<*>
                 from.editableField.bindBidirectional(to.editableField)
@@ -92,9 +90,8 @@ class MainView : View("Hello TornadoFX semen") {
 
     private fun save() {
 
-        controller.step(mData)
+        controller.step()
         tableView.requestResize()
-        mData.refreshChart()
         val person = tableView.selectedItem
         println("Saving ${person?.params?.map { it.value }}")
     }
