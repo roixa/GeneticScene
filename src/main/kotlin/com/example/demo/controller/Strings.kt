@@ -6,6 +6,7 @@ object Strings {
     val titlePopulation = "Population"
     val titleAttributes = "Attributes"
     val titleEffectivity = "Effectivity"
+    val titleDistance = "Distance"
 
     val titleRelativeDistance =  "RelativeDistance"
     val titleNewEffectivelyChangesPercent=  "NewEffectivelyChangesPercent"

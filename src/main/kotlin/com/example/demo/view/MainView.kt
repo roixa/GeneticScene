@@ -34,7 +34,7 @@ class MainView : View("Roix genetic algorithm") {
                     column(Strings.titleAttributes, UISnapshot::attributesColomn)
                     column(Strings.titlePopulation, UISnapshot::populationColomn)
                     column(Strings.titleEffectivity, UISnapshot::effecrivityColomn)
-
+                    column(Strings.titleDistance, UISnapshot::distanceColomn)
 
                     selectionModel.selectedItemProperty().onChange {
                         editScene(it)

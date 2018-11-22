@@ -1,12 +1,14 @@
 package com.example.demo.model
 
-class Female(genDimension: Int, genNumber: Int) : Person(genDimension, genNumber) {
+import java.util.*
+
+class Female(genDimension: Int, genNumber: Int, rand: Random) : Person(genDimension, genNumber, rand) {
 
     fun sex(person: Person): Person {
         val new = if (isTrueRandomly()) {
-            Male(genDimension, genNumber)
+            Male(genDimension, genNumber, rand)
         } else {
-            Female(genDimension, genNumber)
+            Female(genDimension, genNumber, rand)
         }
         combineParentGenes(new, person)
         return new

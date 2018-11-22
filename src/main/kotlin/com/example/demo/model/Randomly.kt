@@ -2,9 +2,7 @@ package com.example.demo.model
 
 import java.util.*
 
-open class Randomly(private val dimension: Int) {
-
-    val rand = Random(System.currentTimeMillis())
+open class Randomly(private val dimension: Int,val rand:Random) {
 
     val values = IntArray(2 * dimension)
 
