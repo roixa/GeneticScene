@@ -1,8 +1,9 @@
 package com.example.demo.controller
 
+import com.example.demo.model.Params
 import com.example.demo.model.Scene
 import com.example.demo.view.UIData
-import com.example.demo.view.common.UISnapshot
+import com.example.demo.view.UISnapshot
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,7 +15,7 @@ class MainController : Controller() {
 
     val scenes = emptyList<Scene>().toMutableList()
 
-    val data = UIData(UISnapshot(Scene(), 0))
+    val data = UIData(UISnapshot(Scene(params = Params()), 0))
 
     fun startNewNistory() {
         runBlocking {
@@ -50,7 +51,7 @@ class MainController : Controller() {
     }
 
     private suspend fun createNewScene(lastScene: Scene? = null): Scene {
-        return withContext(IO) { Scene(lastScene) }
+        return withContext(IO) { Scene(lastScene, data.first.params.toParams()) }
     }
 
 

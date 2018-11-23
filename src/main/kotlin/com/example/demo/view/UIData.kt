@@ -1,7 +1,6 @@
 package com.example.demo.view
 
 import com.example.demo.view.common.IChartPoint
-import com.example.demo.view.common.UISnapshot
 import javafx.collections.ObservableList
 import javafx.scene.chart.XYChart
 import tornadofx.*
@@ -10,12 +9,12 @@ class UIData(val first: UISnapshot) {
 
     val snapshots = listOf(first).toMutableList().observable()
 
-    val charts : HashMap<String, ObservableList<XYChart.Data<Number, Number>>>
+    val charts: HashMap<String, ObservableList<XYChart.Data<Number, Number>>>
 
-    val chartsNames :List<String>
+    val chartsNames: List<String>
 
     init {
-        chartsNames = first.params
+        chartsNames = first.params.list
                 .filter { it is IChartPoint }
                 .map { it.name }
 

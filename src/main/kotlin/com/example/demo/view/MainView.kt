@@ -3,7 +3,6 @@ package com.example.demo.view
 import com.example.demo.controller.MainController
 import com.example.demo.controller.Strings
 import com.example.demo.view.common.IEditableField
-import com.example.demo.view.common.UISnapshot
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
 import javafx.scene.control.TableView
@@ -18,7 +17,7 @@ class MainView : View("Roix genetic algorithm") {
     override val root = BorderPane()
 
 
-    var prevSelection: UISnapshot? = null
+//    var prevSelection: UISnapshot? = null
 
     lateinit var tableView: TableView<UISnapshot>
     lateinit var chartView: LineChart<*, *>
@@ -37,8 +36,8 @@ class MainView : View("Roix genetic algorithm") {
                     column(Strings.titleDistance, UISnapshot::distanceColomn)
 
                     selectionModel.selectedItemProperty().onChange {
-                        editScene(it)
-                        prevSelection = it
+                        //                        editScene(it)
+//                        prevSelection = it
                     }
                     columnResizePolicy = SmartResize.POLICY
                 }
@@ -70,30 +69,28 @@ class MainView : View("Roix genetic algorithm") {
         }
     }
 
-    private fun editScene(scene: UISnapshot?) {
-        if (scene != null) {
-            prevSelection?.apply {
-                this.getEditableParams().zip(controller.data.first.getEditableParams()).forEach {
-                    val from = it.second as IEditableField<*>
-                    val to = it.first as IEditableField<*>
-                    from.editableField.unbindBidirectional(to.editableField)
-                }
-            }
-            scene.getEditableParams().zip(controller.data.first.getEditableParams()).forEach {
-                val from = it.second as IEditableField<*>
-                val to = it.first as IEditableField<*>
-                from.editableField.bindBidirectional(to.editableField)
-            }
-            prevSelection = scene
-        }
-    }
+//    private fun editScene(scene: UISnapshot?) {
+//        if (scene != null) {
+//            prevSelection?.apply {
+//                this.getEditableParams().zip(controller.data.first.getEditableParams()).forEach {
+//                    val from = it.second as IEditableField<*>
+//                    val to = it.first as IEditableField<*>
+//                    from.editableField.unbindBidirectional(to.editableField)
+//                }
+//            }
+//            scene.getEditableParams().zip(controller.data.first.getEditableParams()).forEach {
+//                val from = it.second as IEditableField<*>
+//                val to = it.first as IEditableField<*>
+//                from.editableField.bindBidirectional(to.editableField)
+//            }
+//            prevSelection = scene
+//        }
+//    }
 
     private fun save() {
-
+        print("Saving ${controller.data.first.params.toParams()}")
         controller.step()
         tableView.requestResize()
-        val person = tableView.selectedItem
-        println("Saving ${person?.params?.map { it.value }}")
     }
 
 }

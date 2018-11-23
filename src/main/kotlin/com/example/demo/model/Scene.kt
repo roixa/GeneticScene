@@ -4,25 +4,24 @@ import com.example.demo.controller.Logger
 import java.util.*
 
 class Scene(val oldScene: Scene? = null
-            , val genDimension: Int = 10
-            , val genNumber: Int = 10
-            , val attributesNumber: Int = 10
-            , var population: Int = 100
-            , val maxAge: Int = 2
-            , val maxReproductiveAge: Int = 1
-            , val maxSexes: Int = 3
-            , val relativeDistance: Double = 0.5
-            , val newEffectivityChangesPersent: Int = 0) : Randomly(genDimension, Random(System.currentTimeMillis())) {
+            , params: Params) : Randomly(params.genDimension, Random(System.currentTimeMillis())) {
+
+
+    val genDimension: Int = params.genDimension
+    val genNumber: Int = params.genNumber
+    val attributesNumber: Int = params.attributesNumber
+    var population: Int = params.population
+    val maxAge: Int = params.maxAge
+    val maxReproductiveAge: Int = params.maxAge
+    val maxSexes: Int = params.maxSexes
+    val relativeDistance: Double = params.relativeDistance
+    val newEffectivityChangesPersent: Int = params.newEffectivelyChangesPercent
+    val personsEffectivity: Int
+    val maxDistance: Double
 
     val conditions: Array<IntArray>
-
     val effectivity: IntArray
-
     val persons: MutableList<Person>
-
-    val personsEffectivity: Int
-
-    val maxDistance: Double
 
     init {
         if (isNeedToRegenerate() || oldScene == null) {
@@ -68,7 +67,7 @@ class Scene(val oldScene: Scene? = null
                 .sumBy { it.getPersonalEffectivity(conditions, effectivity) }.div(persons.size)
     }
 
-    private fun initGeneratedParams(){
+    private fun initGeneratedParams() {
 
     }
 
