@@ -37,9 +37,13 @@ class MainController : Controller() {
             val add = createNewScene(scenes.lastOrNull())
             scenes.add(add)
         }.invokeOnCompletion {
-            val size = data.snapshots.size
-            data.snapshots.add(UISnapshot(scenes.last(), size - 1))
-            data.refreshChart()
+            try {
+                val size = data.snapshots.size
+                data.snapshots.add(UISnapshot(scenes.last(), size - 1))
+                data.refreshChart()
+            } catch (e: Exception) {
+
+            }
         }
 
 

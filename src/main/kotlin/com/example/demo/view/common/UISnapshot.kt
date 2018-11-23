@@ -7,9 +7,9 @@ class UISnapshot(scene: Scene, position: Int) {
 
     companion object {
         fun getParams(scene: Scene, position: Int = 0): List<UIParam> = listOf(
-                NumberField(position, scene.params.genNumber),
-                DimensionField(position, scene.params.genDimension),
-                AttributesField(position, scene.params.attributesNumber),
+                NumberField(position, scene.genNumber),
+                DimensionField(position, scene.genDimension),
+                AttributesField(position, scene.attributesNumber),
                 PopulationField(position, scene.population),
                 EffectivityField(position, scene.personsEffectivity.toDouble()),
                 DistanceField(position, scene.maxDistance)
@@ -18,6 +18,7 @@ class UISnapshot(scene: Scene, position: Int) {
     }
 
     val params: List<UIParam> = getParams(scene, position)
+
 
     fun numberColomn() = (params[0] as IEditableField<*>).editableField
     fun dimensionColomn() = (params[1] as IEditableField<*>).editableField

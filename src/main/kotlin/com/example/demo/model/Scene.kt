@@ -4,16 +4,15 @@ import com.example.demo.controller.Logger
 import java.util.*
 
 class Scene(val oldScene: Scene? = null
-            , genDimension: Int = 10
-            , genNumber: Int = 10
-            , attributesNumber: Int = 10
-            , var population: Int = 10
+            , val genDimension: Int = 10
+            , val genNumber: Int = 10
+            , val attributesNumber: Int = 10
+            , var population: Int = 100
             , val maxAge: Int = 2
+            , val maxReproductiveAge: Int = 1
             , val maxSexes: Int = 3
-            , val relativeDistance: Double = 1.0
-            , newEffectivityChangesPersent: Int = 0) : Randomly(genDimension, Random(System.currentTimeMillis())) {
-
-    val params = Params(genDimension, genNumber, attributesNumber, population, relativeDistance, newEffectivityChangesPersent)
+            , val relativeDistance: Double = 0.5
+            , val newEffectivityChangesPersent: Int = 0) : Randomly(genDimension, Random(System.currentTimeMillis())) {
 
     val conditions: Array<IntArray>
 
@@ -69,6 +68,10 @@ class Scene(val oldScene: Scene? = null
                 .sumBy { it.getPersonalEffectivity(conditions, effectivity) }.div(persons.size)
     }
 
+    private fun initGeneratedParams(){
+
+    }
+
     private fun bornNewPopulation() {
 
         val males = persons.filter { it is Male }
@@ -114,6 +117,6 @@ class Scene(val oldScene: Scene? = null
     }
 
 
-    private fun isNeedToRegenerate() = params.isBaseParametersChanged(oldScene?.params)
+    private fun isNeedToRegenerate() = genDimension != oldScene?.genDimension && genDimension != oldScene?.genNumber
 
 }

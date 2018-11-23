@@ -8,7 +8,4 @@ data class Params(val genDimension: Int
                   , val relativeDistance: Double
                   , val newEffectivelyChangesPercent: Int) {
 
-    fun isBaseParametersChanged(params: Params?): Boolean {
-        return genDimension != params?.genDimension && genNumber != params?.genNumber
-    }
 }
