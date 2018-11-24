@@ -3,7 +3,7 @@ package com.example.demo.model
 import java.util.*
 import kotlin.math.pow
 
-open class Person(val genDimension: Int, val genNumber: Int,rand:Random) : Randomly(genDimension,rand) {
+open class Person(val genDimension: Int, val genNumber: Int, rand: Random) : Randomly(genDimension, rand) {
 
     val genes = IntArray(genNumber) { getNextRandomValue() }
 
@@ -17,4 +17,10 @@ open class Person(val genDimension: Int, val genNumber: Int,rand:Random) : Rando
             .pow(0.5)
 
 
+    fun to2DimensionProjection(): Pair<Double, Double> {
+        val half = genNumber / 2
+        val x = genes.toList().subList(0, half).sum().toDouble() / half
+        val y = genes.toList().subList(half + 1, genes.size - 1).sum().toDouble() / half
+        return Pair(x, y)
+    }
 }

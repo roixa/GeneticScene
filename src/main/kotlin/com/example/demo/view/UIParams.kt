@@ -13,7 +13,14 @@ class UIParams(scene: Scene, position: Int = 0) {
     val effectivity = EffectivityField(position, scene.personsEffectivity.toDouble())
     val distance = DistanceField(position, scene.maxDistance)
 
-    val list: List<UIParam> = listOf(number, dimension, attributes, population, effectivity, distance)
+    val geneticPoints: List<GeneticPointField> = scene
+            .persons
+            .map { it.to2DimensionProjection() }
+            .map {
+                GeneticPointField(it.first, it.second)
+            }
+
+    val paramsList: List<UIParam> = listOf(number, dimension, attributes, population, effectivity, distance)
 
     fun toParams() = Params(dimension.value.toInt()
             , number.value.toInt()

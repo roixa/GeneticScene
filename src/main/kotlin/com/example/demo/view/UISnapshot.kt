@@ -8,7 +8,6 @@ class UISnapshot(scene: Scene, position: Int) {
 
     val params: UIParams = UIParams(scene, position)
 
-
     fun numberColomn() = params.number.editableField
     fun dimensionColomn() = params.dimension.editableField
     fun attributesColomn() = params.attributes.editableField
@@ -16,9 +15,9 @@ class UISnapshot(scene: Scene, position: Int) {
     fun effecrivityColomn() = params.effectivity.editableField
     fun distanceColomn() = params.distance.editableField
 
-    fun getEditableParams() = params.list.filter { it is IEditableField<*> }
+    fun getEditableParams() = params.paramsList.filter { it is IEditableField<*> }
 
-    fun getChartPointsByName(name: String) = params.list
+    fun getChartPointsByName(name: String) = params.paramsList
             .filter { it.name == name }
             .filter { it is IChartPoint }
             .map {

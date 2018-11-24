@@ -12,7 +12,7 @@ class Scene(val oldScene: Scene? = null
     val attributesNumber: Int = params.attributesNumber
     var population: Int = params.population
     val maxAge: Int = params.maxAge
-    val maxReproductiveAge: Int = params.maxAge
+    val maxReproductiveAge: Int = params.maxReproductiveAge
     val maxSexes: Int = params.maxSexes
     val relativeDistance: Double = params.relativeDistance
     val newEffectivityChangesPersent: Int = params.newEffectivelyChangesPercent
@@ -77,8 +77,10 @@ class Scene(val oldScene: Scene? = null
                 .map { it as Male }
                 .sortedByDescending { it.getPersonalEffectivity(conditions, effectivity) }
 
-        persons.filter { it is Female }
-                .forEach {
+        persons
+                .filter {
+                    (it is Female) && (it.age <= maxReproductiveAge)
+                }.forEach {
                     it as Female
                     interactPair(males, it, maxDistance)
                 }
