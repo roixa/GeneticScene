@@ -23,6 +23,7 @@ class Scene(val oldScene: Scene? = null
     val effectivity: IntArray
     val persons: MutableList<Person>
 
+
     init {
         if (isNeedToRegenerate() || oldScene == null) {
             conditions = Array(attributesNumber) {
@@ -67,10 +68,6 @@ class Scene(val oldScene: Scene? = null
                 .sumBy { it.getPersonalEffectivity(conditions, effectivity) }.div(persons.size)
     }
 
-    private fun initGeneratedParams() {
-
-    }
-
     private fun bornNewPopulation() {
 
         val males = persons.filter { it is Male }
@@ -92,9 +89,13 @@ class Scene(val oldScene: Scene? = null
         }
     }
 
+    private fun calculateClusters(){
+
+    }
+
     private fun interactPair(males: List<Male>, female: Female, maxAllowedDistance: Double) {
         val choosen = males
-                .filter { it.distanceTo(female) < maxAllowedDistance }
+                .filter { it.distanceTo(female) <= maxAllowedDistance }
                 .firstOrNull { it.sexes < maxSexes }
         if (choosen != null) {
             persons.add(female.sex(choosen))

@@ -3,6 +3,7 @@ package com.example.demo.view
 import com.example.demo.controller.MainController
 import com.example.demo.controller.Strings
 import com.example.demo.view.common.IEditableField
+import javafx.scene.chart.CategoryAxis
 import javafx.scene.chart.NumberAxis
 import javafx.scene.control.TableView
 import javafx.scene.layout.BorderPane
@@ -47,6 +48,10 @@ class MainView : View("Roix genetic algorithm") {
                     column(Strings.titleEffectivity, UISnapshot::effecrivityColomn)
                     column(Strings.titleDistance, UISnapshot::distanceColomn)
                     columnResizePolicy = SmartResize.POLICY
+                    selectionModel.selectedItemProperty().onChange {
+                        editScene(it)
+                    }
+
                 }
 
             }
@@ -60,11 +65,22 @@ class MainView : View("Roix genetic algorithm") {
                 }
             }
             bottom {
-                scatterchart(Strings.titlePopulation, NumberAxis(), NumberAxis()) {
-                    series(Strings.titlePopulation, controller.data.scatterChartPoints)
+                hbox {
+                    scatterchart(Strings.titlePopulation, NumberAxis(), NumberAxis()) {
+                        series(Strings.titlePopulation, controller.data.scatterChartPoints)
+                    }
+                    barchart(Strings.titlePopulation, CategoryAxis(), NumberAxis()) {
+                        series(Strings.titlePopulation, controller.data.barChartPoints)
+                    }
                 }
 
             }
+        }
+    }
+
+    private fun editScene(scene: UISnapshot?) {
+        if (scene != null) {
+            controller.data.refreshChart(scene)
         }
     }
 

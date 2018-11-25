@@ -22,7 +22,7 @@ class UISnapshot(scene: Scene, position: Int) {
             .filter { it is IChartPoint }
             .map {
                 it as IChartPoint
-                it.getChartProperty(it.value.toInt())
+                it.getChartProperty()
             }
 
 

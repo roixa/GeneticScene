@@ -41,7 +41,7 @@ class MainController : Controller() {
             try {
                 val size = data.snapshots.size
                 data.snapshots.add(UISnapshot(scenes.last(), size - 1))
-                data.refreshChart()
+                data.refreshChart(data.snapshots.last())
             } catch (e: Exception) {
 
             }
