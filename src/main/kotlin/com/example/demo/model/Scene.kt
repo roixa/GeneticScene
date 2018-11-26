@@ -16,6 +16,7 @@ class Scene(val oldScene: Scene? = null
     val maxSexes: Int = params.maxSexes
     val relativeDistance: Double = params.relativeDistance
     val newEffectivityChangesPersent: Int = params.newEffectivelyChangesPercent
+    val newGenChangesPercent: Int = params.newGenChangesPersent
     val personsEffectivity: Int
     val maxDistance: Double
 
@@ -40,11 +41,15 @@ class Scene(val oldScene: Scene? = null
                 }
             }
             maxDistance = calculatesAbsoluteMaxDistance()
-
-            Logger.logInitalData(conditions, effectivity)
         } else {
             conditions = oldScene.conditions
-            effectivity = oldScene.effectivity
+            effectivity = oldScene.effectivity.apply {
+                forEachIndexed { i, p ->
+                    if (isTrueRandomly(newEffectivityChangesPersent)) {
+                        this[i] = getNextRandomValue()
+                    }
+                }
+            }
             persons = oldScene.persons.apply {
                 forEach {
                     it.age = it.age + 1
@@ -89,16 +94,12 @@ class Scene(val oldScene: Scene? = null
         }
     }
 
-    private fun calculateClusters(){
-
-    }
-
     private fun interactPair(males: List<Male>, female: Female, maxAllowedDistance: Double) {
         val choosen = males
                 .filter { it.distanceTo(female) <= maxAllowedDistance }
                 .firstOrNull { it.sexes < maxSexes }
         if (choosen != null) {
-            persons.add(female.sex(choosen))
+            persons.add(female.sex(choosen, newGenChangesPercent))
             val sexes = choosen.sexes
             choosen.sexes = sexes + 1
 

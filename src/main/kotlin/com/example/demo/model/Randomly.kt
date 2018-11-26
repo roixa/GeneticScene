@@ -2,7 +2,7 @@ package com.example.demo.model
 
 import java.util.*
 
-open class Randomly(private val dimension: Int,val rand:Random) {
+open class Randomly(private val dimension: Int, val rand: Random) {
 
     val values = IntArray(2 * dimension)
 
@@ -21,5 +21,7 @@ open class Randomly(private val dimension: Int,val rand:Random) {
     fun getNextRandomValue(): Int = values[rand.nextInt(2 * dimension)]
 
     fun isTrueRandomly() = rand.nextBoolean()
+
+    fun isTrueRandomly(percent: Int) = rand.nextInt(100) < percent
 }
 

@@ -41,12 +41,19 @@ class MainView : View("Roix genetic algorithm") {
             }
             center {
                 tableView = tableview(controller.data.snapshots) {
+                    column(Strings.titleEffectivity, UISnapshot::effecrivityColomn)
+                    column(Strings.titleDistance, UISnapshot::distanceColomn)
+                    column(Strings.titlePopulation, UISnapshot::populationColomn)
+                    column(Strings.titleMaxRelativeDistance, UISnapshot::relativeDistanceColomn)
+                    column(Strings.titleNewEffectivelyChangesPercent, UISnapshot::newEffictivityChangesPersentColomnm)
+
+                    column(Strings.titleMaxAge, UISnapshot::maxAgeColomn)
+                    column(Strings.titleMaxReproductiveAge, UISnapshot::maxReproductiveAgeColomn)
+
                     column(Strings.titleNumber, UISnapshot::numberColomn)
                     column(Strings.titleDimension, UISnapshot::dimensionColomn)
                     column(Strings.titleAttributes, UISnapshot::attributesColomn)
-                    column(Strings.titlePopulation, UISnapshot::populationColomn)
-                    column(Strings.titleEffectivity, UISnapshot::effecrivityColomn)
-                    column(Strings.titleDistance, UISnapshot::distanceColomn)
+
                     columnResizePolicy = SmartResize.POLICY
                     selectionModel.selectedItemProperty().onChange {
                         editScene(it)
@@ -57,22 +64,24 @@ class MainView : View("Roix genetic algorithm") {
             }
             right {
                 vbox {
+                    scatterchart(Strings.titlePopulation, NumberAxis(), NumberAxis()) {
+                        series(Strings.titlePopulation, controller.data.scatterChartPoints)
+                    }
+                    barchart(Strings.titleClusters, CategoryAxis(), NumberAxis()) {
+                        series(Strings.titlePopulation, controller.data.barChartPoints)
+                    }
+                }
+
+            }
+            bottom {
+                hbox {
                     controller.data.chartsNames.forEach {
                         linechart(it, NumberAxis(), NumberAxis()) {
                             series(it, controller.data.charts[it])
                         }
                     }
                 }
-            }
-            bottom {
-                hbox {
-                    scatterchart(Strings.titlePopulation, NumberAxis(), NumberAxis()) {
-                        series(Strings.titlePopulation, controller.data.scatterChartPoints)
-                    }
-                    barchart(Strings.titlePopulation, CategoryAxis(), NumberAxis()) {
-                        series(Strings.titlePopulation, controller.data.barChartPoints)
-                    }
-                }
+
 
             }
         }

@@ -14,6 +14,10 @@ class UISnapshot(scene: Scene, position: Int) {
     fun populationColomn() = params.population.editableField
     fun effecrivityColomn() = params.effectivity.editableField
     fun distanceColomn() = params.distance.editableField
+    fun relativeDistanceColomn() = params.maxRelativeDistance.editableField
+    fun maxAgeColomn() = params.maxAge.editableField
+    fun maxReproductiveAgeColomn() = params.maxReproductiveAge.editableField
+    fun newEffictivityChangesPersentColomnm() = params.newEffectivityChangesPersent.editableField
 
     fun getEditableParams() = params.paramsList.filter { it is IEditableField<*> }
 
@@ -24,7 +28,6 @@ class UISnapshot(scene: Scene, position: Int) {
                 it as IChartPoint
                 it.getChartProperty()
             }
-
 
 
 }

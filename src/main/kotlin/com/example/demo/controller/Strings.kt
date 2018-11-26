@@ -7,8 +7,12 @@ object Strings {
     val titleAttributes = "Attributes"
     val titleEffectivity = "Effectivity"
     val titleDistance = "Distance"
-
-    val titleRelativeDistance =  "RelativeDistance"
-    val titleNewEffectivelyChangesPercent=  "NewEffectivelyChangesPercent"
+    val titleClusters = "Clusters"
+    val titleRelativeDistance = "RelativeDistance"
+    val titleNewEffectivelyChangesPercent = "NewEffectivelyChangesPercent"
+    val titleMaxRelativeDistance = "Max relative distance"
+    val titleMaxAge = "Max age"
+    val titleMaxReproductiveAge = "Max reproductive age"
+    val titleMaxSexes = "Max sexes"
 
 }
