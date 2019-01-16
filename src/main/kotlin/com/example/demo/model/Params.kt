@@ -8,8 +8,8 @@ data class Params(val genDimension: Int = 20
                   , val maxAge: Int = 3
                   , val maxReproductiveAge: Int = 2
                   , val maxSexes: Int = 3
-                  , val relativeDistance: Double = 0.4
+                  , val relativeDistance: Double = 0.9
                   , val newEffectivelyChangesPercent: Int = 2
-                  , val newGenChangesPersent: Int = 5) {
+                  , val newGenChangesPersent: Int = 10) {
 
 }

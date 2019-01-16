@@ -40,7 +40,7 @@ class Scene(val oldScene: Scene? = null
                     Female(genDimension, genNumber, rand)
                 }
             }
-            maxDistance = calculatesAbsoluteMaxDistance()
+            maxDistance = calculatesAverageMaxDistance()
         } else {
             conditions = oldScene.conditions
             effectivity = oldScene.effectivity.apply {
@@ -60,7 +60,7 @@ class Scene(val oldScene: Scene? = null
                             it.sexes = 0
                         }
             }
-            maxDistance = calculatesAbsoluteMaxDistance()
+            maxDistance = calculatesAverageMaxDistance()
             Logger.logPopulation(persons)
             bornNewPopulation()
             destroyOldPopulation()
@@ -80,12 +80,14 @@ class Scene(val oldScene: Scene? = null
                 .sortedByDescending { it.getPersonalEffectivity(conditions, effectivity) }
 
         persons
-                .filter {
-                    (it is Female) && (it.age <= maxReproductiveAge)
-                }.forEach {
+                .filter { (it is Female) && (it.age <= maxReproductiveAge) }
+                .forEach {
                     it as Female
                     interactPair(males, it, maxDistance)
                 }
+        val clusters = emptyList<List<Person>>().toMutableList()
+        generateClusters(persons, clusters)
+        print("clusters.size $clusters.size")
     }
 
     private fun destroyOldPopulation() {
@@ -106,20 +108,27 @@ class Scene(val oldScene: Scene? = null
         }
     }
 
-    private fun calculatesAbsoluteMaxDistance(): Double {
+    private fun calculatesAverageMaxDistance(): Double {
         var max = 0.0
         persons.forEach { first ->
             persons.forEach { second ->
                 val d = first.distanceTo(second)
-                if (d > max) {
-                    max = d
-                }
+                max += d
             }
         }
-        return max.times(relativeDistance)
+        return max.times(relativeDistance).div(persons.size * persons.size)
     }
 
 
     private fun isNeedToRegenerate() = genDimension != oldScene?.genDimension && genDimension != oldScene?.genNumber
+
+    private fun generateClusters(persons: List<Person>, ret: MutableList<List<Person>>) {
+        if (persons.isEmpty()) return
+        val core = persons.first()
+        val cluster = persons.filter { it.distanceTo(core) <= maxDistance }
+        val out = persons.filter { it.distanceTo(core) > maxDistance }
+        ret.add(cluster)
+        generateClusters(out, ret)
+    }
 
 }

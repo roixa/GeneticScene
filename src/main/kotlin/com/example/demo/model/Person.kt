@@ -1,6 +1,7 @@
 package com.example.demo.model
 
 import java.util.*
+import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 open class Person(val genDimension: Int, val genNumber: Int, rand: Random) : Randomly(genDimension, rand) {
@@ -11,7 +12,8 @@ open class Person(val genDimension: Int, val genNumber: Int, rand: Random) : Ran
 
     fun distanceTo(person: Person): Double = genes
             .zip(person.genes)
-            .map { it.first.minus(it.second) }
+//            .count { it.first!=it.second }.toDouble()
+            .map { it.first.absoluteValue.minus(it.second.absoluteValue) }
             .map { it * it }
             .sum().toDouble()
             .pow(0.5)
