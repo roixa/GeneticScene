@@ -10,16 +10,18 @@ class Scene(val oldScene: Scene? = null
     val genDimension: Int = params.genDimension
     val genNumber: Int = params.genNumber
     val attributesNumber: Int = params.attributesNumber
-    var population: Int = params.population
     val maxAge: Int = params.maxAge
     val maxReproductiveAge: Int = params.maxReproductiveAge
     val maxSexes: Int = params.maxSexes
     val relativeDistance: Double = params.relativeDistance
+    val startedMaxDistance: Double
     val newEffectivityChangesPersent: Int = params.newEffectivelyChangesPercent
     val newGenChangesPercent: Int = params.newGenChangesPersent
+    var population: Int = params.population
+        private set
     val personsEffectivity: Int
-    val maxDistance: Double
-
+    val clusters: List<List<Person>>
+    val maxDistanceInCluster: Double
     val conditions: Array<IntArray>
     val effectivity: IntArray
     val persons: MutableList<Person>
@@ -27,67 +29,39 @@ class Scene(val oldScene: Scene? = null
 
     init {
         if (isNeedToRegenerate() || oldScene == null) {
-            conditions = Array(attributesNumber) {
-                IntArray(genNumber) { getNextRandomValue() }
-            }
-            effectivity = IntArray(attributesNumber) {
-                getNextRandomValue()
-            }
-            persons = MutableList(population) {
-                if (isTrueRandomly()) {
-                    Male(genDimension, genNumber, rand)
-                } else {
-                    Female(genDimension, genNumber, rand)
-                }
-            }
-            maxDistance = calculatesAverageMaxDistance()
+            conditions = generateNewConditions()
+            effectivity = generateNewEffectivities()
+            persons = generateNewPopulation()
+            startedMaxDistance = calculatesAverageMaxDistance()
         } else {
             conditions = oldScene.conditions
-            effectivity = oldScene.effectivity.apply {
-                forEachIndexed { i, p ->
-                    if (isTrueRandomly(newEffectivityChangesPersent)) {
-                        this[i] = getNextRandomValue()
-                    }
-                }
-            }
-            persons = oldScene.persons.apply {
-                forEach {
-                    it.age = it.age + 1
-                }
-                filter { it is Male }
-                        .forEach {
-                            it as Male
-                            it.sexes = 0
-                        }
-            }
-            maxDistance = calculatesAverageMaxDistance()
-            Logger.logPopulation(persons)
-            bornNewPopulation()
-            destroyOldPopulation()
-            population = persons.size
+            effectivity = prepareExistingEffectivity()!!
+            persons = prepareExistingPersons()!!
+            startedMaxDistance = params.absoluteStartedDistance
+//            startedMaxDistance = calculatesAverageMaxDistance()
 
         }
+        Logger.logPopulation(persons)
+        personsEffectivity = calculateAveragePersonsEffectivity()
+        clusters = generateClusters()
+        maxDistanceInCluster = calculatesAverageMaxDistanceInClusters(clusters)
+        bornNewPopulation()
+        destroyOldPopulation()
+        population = persons.size
 
-        personsEffectivity = persons.filter { it is Male }
-                .map { it as Male }
-                .sumBy { it.getPersonalEffectivity(conditions, effectivity) }.div(persons.size)
     }
 
+
     private fun bornNewPopulation() {
-
-        val males = persons.filter { it is Male }
-                .map { it as Male }
-                .sortedByDescending { it.getPersonalEffectivity(conditions, effectivity) }
-
-        persons
-                .filter { (it is Female) && (it.age <= maxReproductiveAge) }
-                .forEach {
-                    it as Female
-                    interactPair(males, it, maxDistance)
-                }
-        val clusters = emptyList<List<Person>>().toMutableList()
-        generateClusters(persons, clusters)
-        print("clusters.size $clusters.size")
+        clusters.forEach { persons ->
+            val males = persons.mapNotNull { it as? Male }
+            val females = persons.mapNotNull { it as? Female }
+            females
+                    .filter { it.age < maxReproductiveAge }
+                    .forEach {
+                        interactPair(males, it)
+                    }
+        }
     }
 
     private fun destroyOldPopulation() {
@@ -96,15 +70,51 @@ class Scene(val oldScene: Scene? = null
         }
     }
 
-    private fun interactPair(males: List<Male>, female: Female, maxAllowedDistance: Double) {
+    private fun interactPair(males: List<Male>, female: Female) {
         val choosen = males
-                .filter { it.distanceTo(female) <= maxAllowedDistance }
-                .firstOrNull { it.sexes < maxSexes }
+                .filter { it.sexes < maxSexes }
+                .maxBy { it.effectivity }
         if (choosen != null) {
             persons.add(female.sex(choosen, newGenChangesPercent))
-            val sexes = choosen.sexes
-            choosen.sexes = sexes + 1
+            choosen.sexes = choosen.sexes + 1
+        }
+    }
 
+    private fun generateNewConditions() = Array(attributesNumber) {
+        IntArray(genNumber) { getNextRandomValue() }
+    }
+
+    private fun generateNewEffectivities() = IntArray(attributesNumber) {
+        getNextRandomValue()
+    }
+
+    private fun prepareExistingPersons() = oldScene?.persons?.apply {
+        forEach {
+            it.age = it.age + 1
+        }
+        filter { it is Male }
+                .forEach {
+                    it as Male
+                    it.sexes = 0
+                    it.refreshPersonalEffectivity(conditions, effectivity)
+                }
+    }
+
+    private fun generateNewPopulation() = MutableList(population) {
+        if (isTrueRandomly()) {
+            Male(genDimension, genNumber, rand).apply {
+                this.refreshPersonalEffectivity(conditions, this@Scene.effectivity)
+            }
+        } else {
+            Female(genDimension, genNumber, rand)
+        }
+    }
+
+    private fun prepareExistingEffectivity() = oldScene?.effectivity?.apply {
+        forEachIndexed { i, p ->
+            if (isTrueRandomly(newEffectivityChangesPersent)) {
+                this[i] = getNextRandomValue()
+            }
         }
     }
 
@@ -113,22 +123,55 @@ class Scene(val oldScene: Scene? = null
         persons.forEach { first ->
             persons.forEach { second ->
                 val d = first.distanceTo(second)
-                max += d
+                if (d > max) {
+                    max = d
+                }
+//                max += d
             }
         }
-        return max.times(relativeDistance).div(persons.size * persons.size)
+//        return max.div(persons.size * persons.size)
+        return max
     }
+
+    private fun calculatesAverageMaxDistanceInClusters(clusters: List<List<Person>>): Double {
+        val ret = clusters
+                .filter { it.isNotEmpty() }
+                .sumByDouble { cluster ->
+                    var max = 0.0
+                    cluster.forEach { person ->
+                        cluster.forEach {
+                            val d = person.distanceTo(it)
+                            max += d
+                        }
+                    }
+                    max.div(cluster.size * cluster.size)
+                }
+        return ret.div(clusters.size)
+    }
+
+
+    private fun calculateAveragePersonsEffectivity() = persons
+            .mapNotNull { it as? Male }
+            .sumBy { it.effectivity }
+            .div(persons.size)
 
 
     private fun isNeedToRegenerate() = genDimension != oldScene?.genDimension && genDimension != oldScene?.genNumber
 
-    private fun generateClusters(persons: List<Person>, ret: MutableList<List<Person>>) {
+    private fun generateClusters(): List<List<Person>> {
+        val clusters = mutableListOf<List<Person>>()
+        generateClustersRecursive(persons, clusters)
+        return clusters
+    }
+
+    private fun generateClustersRecursive(persons: List<Person>, ret: MutableList<List<Person>>) {
         if (persons.isEmpty()) return
+        val maxDistance = startedMaxDistance * relativeDistance
         val core = persons.first()
         val cluster = persons.filter { it.distanceTo(core) <= maxDistance }
         val out = persons.filter { it.distanceTo(core) > maxDistance }
         ret.add(cluster)
-        generateClusters(out, ret)
+        generateClustersRecursive(out, ret)
     }
 
 }

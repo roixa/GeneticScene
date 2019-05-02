@@ -1,7 +1,6 @@
 package com.example.demo.model
 
 import java.util.*
-import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 open class Person(val genDimension: Int, val genNumber: Int, rand: Random) : Randomly(genDimension, rand) {
@@ -10,19 +9,21 @@ open class Person(val genDimension: Int, val genNumber: Int, rand: Random) : Ran
 
     var age = 0
 
-    fun distanceTo(person: Person): Double = genes
-            .zip(person.genes)
-//            .count { it.first!=it.second }.toDouble()
-            .map { it.first.absoluteValue.minus(it.second.absoluteValue) }
+    fun distanceTo(person: Person): Double = distanceTo(this.genes, person.genes)
+
+    fun to2DimensionProjection(): Pair<Double, Double> {
+        val first = IntArray(genNumber) { genDimension }
+        val second = IntArray(genNumber) { 0 }
+        val x = distanceTo(first, genes)
+        val y = distanceTo(second, genes)
+        return Pair(x, y)
+    }
+
+    private fun distanceTo(first: IntArray, second: IntArray) = first
+            .zip(second)
+            .map { it.first.minus(it.second) }
             .map { it * it }
             .sum().toDouble()
             .pow(0.5)
 
-
-    fun to2DimensionProjection(): Pair<Double, Double> {
-        val half = genNumber / 2
-        val x = genes.toList().subList(0, half).sum().toDouble() / half
-        val y = genes.toList().subList(half + 1, genes.size - 1).sum().toDouble() / half
-        return Pair(x, y)
-    }
 }

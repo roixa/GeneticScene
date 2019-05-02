@@ -2,6 +2,7 @@ package com.example.demo.controller
 
 import com.example.demo.model.Params
 import com.example.demo.model.Scene
+import com.example.demo.model.TestAlg
 import com.example.demo.view.UIData
 import com.example.demo.view.UISnapshot
 import kotlinx.coroutines.Dispatchers.IO
@@ -15,9 +16,10 @@ class MainController : Controller() {
 
     val scenes = emptyList<Scene>().toMutableList()
 
-    val data = UIData(UISnapshot(Scene(params = Params()), 0))
+    val data = UIData(UISnapshot(Scene(null, Params.getStartedData()), 0))
 
     fun startNewNistory() {
+        testAlgrs()
         runBlocking {
             val add = createNewScene(scenes.lastOrNull())
             scenes.apply {
@@ -54,5 +56,11 @@ class MainController : Controller() {
         return withContext(IO) { Scene(lastScene, data.first.params.toParams()) }
     }
 
+    fun testAlgrs() {
+        val result1 = TestAlg.check("{()}[]")
+        val result2 = TestAlg.check("{[}]")
+        val x = 1
+
+    }
 
 }
