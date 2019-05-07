@@ -57,7 +57,7 @@ class Scene(val oldScene: Scene? = null
         clusters.forEach { persons ->
             val males = persons.mapNotNull { it as? Male }
             val females = persons.mapNotNull { it as? Female }
-            females
+            females.sortedByDescending { it.effectivity }
                     .filter { it.age < maxReproductiveAge }
                     .forEach {
                         interactPair(males, it)
@@ -67,7 +67,7 @@ class Scene(val oldScene: Scene? = null
 
     private fun destroyOldPopulation() {
         persons.removeIf {
-            it.age > maxAge
+            it.age > maxAge || it.effectivity < 0//(personsEffectivity.toDouble() * relativeLowestEffectivity))
         }
     }
 
@@ -92,12 +92,13 @@ class Scene(val oldScene: Scene? = null
     private fun prepareExistingPersons() = oldScene?.persons?.apply {
         forEach {
             it.age = it.age + 1
+            it.refreshPersonalEffectivity(conditions, effectivity)
         }
+
         filter { it is Male }
                 .forEach {
                     it as Male
                     it.sexes = 0
-                    it.refreshPersonalEffectivity(conditions, effectivity)
                 }
     }
 
@@ -107,7 +108,9 @@ class Scene(val oldScene: Scene? = null
                 this.refreshPersonalEffectivity(conditions, this@Scene.effectivity)
             }
         } else {
-            Female(genDimension, genNumber, rand)
+            Female(genDimension, genNumber, rand).apply {
+                this.refreshPersonalEffectivity(conditions, this@Scene.effectivity)
+            }
         }
     }
 
@@ -152,7 +155,6 @@ class Scene(val oldScene: Scene? = null
 
 
     private fun calculateAveragePersonsEffectivity() = persons
-            .mapNotNull { it as? Male }
             .sumBy { it.effectivity }
             .div(persons.size)
 

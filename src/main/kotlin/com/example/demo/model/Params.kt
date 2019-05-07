@@ -18,7 +18,7 @@ data class Params(val genDimension: Int
         fun getStartedData() = Params(3,
                 20,
                 10,
-                300,
+                700,
                 3,
                 3,
                 4,
