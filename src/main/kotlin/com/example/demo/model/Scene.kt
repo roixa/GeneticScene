@@ -15,6 +15,7 @@ class Scene(val oldScene: Scene? = null
     val maxSexes: Int = params.maxSexes
     val relativeDistance: Double = params.relativeDistance
     val startedMaxDistance: Double
+    val relativeLowestEffectivity: Double = params.relativeLowestEffectivity
     val newEffectivityChangesPersent: Int = params.newEffectivelyChangesPercent
     val newGenChangesPercent: Int = params.newGenChangesPersent
     var population: Int = params.population

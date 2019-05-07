@@ -53,6 +53,7 @@ class MainView : View("Roix genetic algorithm") {
                     column(Strings.titleNumber, UISnapshot::numberColomn)
                     column(Strings.titleDimension, UISnapshot::dimensionColomn)
                     column(Strings.titleAttributes, UISnapshot::attributesColomn)
+                    column(Strings.titleRelativeLowestEffectivity, UISnapshot::relativeLowestEffectivityColomn)
 
                     columnResizePolicy = SmartResize.POLICY
                     selectionModel.selectedItemProperty().onChange {

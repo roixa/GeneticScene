@@ -17,6 +17,7 @@ class UIParams(val scene: Scene, position: Int = 0) {
     val maxAge = MaxAgeField(position, scene.maxAge)
     val maxReproductiveAge = MaxReproductiveAgeField(position, scene.maxReproductiveAge)
     val maxRelativeDistance = MaxRelativeDistanceField(position, scene.relativeDistance)
+    val relativeLowestEffectivityField = RelativeLowestEffectivityField(position, scene.relativeLowestEffectivity)
 
     val geneticPoints: List<GeneticPointField> = scene
             .persons
@@ -38,6 +39,7 @@ class UIParams(val scene: Scene, position: Int = 0) {
             attributes,
             maxAge,
             maxReproductiveAge,
+            relativeLowestEffectivityField,
             newEffectivityChangesPersent)
 
     fun toParams() = Params(dimension.value.toInt()
@@ -49,6 +51,7 @@ class UIParams(val scene: Scene, position: Int = 0) {
             , scene.maxSexes
             , maxRelativeDistance.value.toDouble()
             , scene.startedMaxDistance
+            , relativeLowestEffectivityField.value.toDouble()
             , newEffectivityChangesPersent.value.toInt()
             , scene.newGenChangesPercent)
 

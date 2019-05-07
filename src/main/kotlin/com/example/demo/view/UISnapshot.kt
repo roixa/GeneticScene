@@ -18,6 +18,7 @@ class UISnapshot(scene: Scene, position: Int) {
     fun maxAgeColomn() = params.maxAge.editableField
     fun maxReproductiveAgeColomn() = params.maxReproductiveAge.editableField
     fun newEffictivityChangesPersentColomnm() = params.newEffectivityChangesPersent.editableField
+    fun relativeLowestEffectivityColomn() = params.relativeLowestEffectivityField.editableField
 
     fun getEditableParams() = params.paramsList.filter { it is IEditableField<*> }
 

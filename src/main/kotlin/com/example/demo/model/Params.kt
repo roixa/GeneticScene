@@ -10,6 +10,7 @@ data class Params(val genDimension: Int
                   , val maxSexes: Int
                   , val relativeDistance: Double
                   , val absoluteStartedDistance: Double
+                  , val relativeLowestEffectivity: Double
                   , val newEffectivelyChangesPercent: Int
                   , val newGenChangesPersent: Int) {
 
@@ -23,6 +24,7 @@ data class Params(val genDimension: Int
                 4,
                 0.6,
                 20.0,
+                0.05,
                 1,
                 1)
     }
